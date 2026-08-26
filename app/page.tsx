@@ -1,15 +1,36 @@
-import Link from 'next/link'
-import {Button} from '@/components/ui/button'
-const page = () => {
+'use client'
+import { useState } from 'react';
+import { Button } from '@/components/ui/button'
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
+
+const Page = () => {
+  const router = useRouter()
+  const [pending, setPending] = useState<boolean>(false)
+
+  const handleLogOut = () => {
+    setPending(true)
+    authClient.signOut({
+      fetchOptions : {
+        onSuccess : () => {
+          setPending(false)
+          router.push("/sign-in")
+        }
+      }
+    });
+    
+  }
+
   return (
     <>
-    <div>Home Page</div>
-    <div>
-    <Button className='cursor-pointer'>Click Me</Button>
-    </div>
-      
+      <h1 className='text-4xl'>Welcome To Home page</h1>
+      <div>
+        <Button disabled={pending} type='button' onClick={handleLogOut}>Logout</Button>
+      </div>
     </>
   )
+
+
 }
 
-export default page;
+export default Page;
