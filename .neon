@@ -1,0 +1,10 @@
+{
+  "_init": {
+    "features": [
+      "database",
+      "auth"
+    ]
+  },
+  "orgId": "org-square-resonance-07071279",
+  "projectId": "falling-salad-48529274"
+}
