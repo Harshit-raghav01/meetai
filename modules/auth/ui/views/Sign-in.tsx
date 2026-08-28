@@ -19,6 +19,11 @@ import { OctagonAlertIcon } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
+
+
+
 
 const SignIn = () => {
 
@@ -60,6 +65,20 @@ const SignIn = () => {
             })
     }
 
+    const handleSocialAuth = (providers : string)=>{
+        setPending(true);
+        authClient.signIn.social({
+            provider : providers
+        },{
+            onSuccess : () => {
+                setPending(false)
+            },
+            onError : () => {
+                setPending(false)
+            }
+        })
+
+    }
     return (
         <div className='flex flex-col gap-6'>
             <Card className='overflow-hidden p-0'>
@@ -102,10 +121,12 @@ const SignIn = () => {
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <Button variant="outline" type="button" className="w-full">
-                                    Google
+                                <Button disabled={pending} onClick={()=>handleSocialAuth("google")} variant="outline" type="button" className="w-full">
+                                   <FcGoogle />
+                                     Google
                                 </Button>
-                                <Button variant="outline" type="button" className="w-full">
+                                <Button disabled={pending} onClick={()=>handleSocialAuth("github")} variant="outline" type="button" className="w-full">
+                                    <FaGithub /> 
                                     Github
                                 </Button>
                             </div>
@@ -117,8 +138,8 @@ const SignIn = () => {
                         </div>
                     </form>
 
-                    <div className='hidden md:flex flex-col relative justify-center items-center bg-radial from-green-500 to-green-900'>
-                        <img src="/logo.svg" alt="Logo" className='h-[92px] w-[92px]' />
+                    <div className='hidden md:flex flex-col relative justify-center items-center bg-radial from-sidebar-accent to-sidebar'>
+                        <img src="/logo.svg" alt="Logo" className='h-23 w-23' />
                         <p className='font-bold text-3xl text-white'>Meet AI</p>
                     </div>
                 </CardContent>
