@@ -18,34 +18,36 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { OctagonAlertIcon } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 
 
 const SignIn = () => {
 
     const router = useRouter()
-    const [error, setError] = useState<String | null >(null);
+    const [error, setError] = useState<String | null>(null);
     const [pending, setPending] = useState<boolean>(false)
 
     const formSchema = z.object({
         name: z.string().min(1, "Name is required"),
         email: z.email("Invalid Email"),
         password: z.string().min(1, "Password is required"),
-        confirmPassword : z.string().min(1, "Confirm Password is required"),
+        confirmPassword: z.string().min(1, "Confirm Password is required"),
     }).refine((data) => data.password === data.confirmPassword, {
-      message : "Password does not match",
-      path : ["confirmPassword"],
+        message: "Password does not match",
+        path: ["confirmPassword"],
     }).refine((data) => data.name.length >= 3, {
-      message : "Name must be at least 3 Characters",
-      path : ["name"]
+        message: "Name must be at least 3 Characters",
+        path: ["name"]
     })
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          name: "",
-          email: "",
-          password: "",
-          confirmPassword: ""
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: ""
         }
     })
 
@@ -54,7 +56,7 @@ const SignIn = () => {
         setError(null);
         setPending(true)
         authClient.signUp.email({
-            name : values.name,
+            name: values.name,
             email: values.email,
             password: values.password
         },
@@ -71,6 +73,21 @@ const SignIn = () => {
             })
     }
 
+    const handleSocialAuth = (providers : string)=>{
+            setPending(true);
+            authClient.signIn.social({
+                provider : providers
+            },{
+                onSuccess : () => {
+                    setPending(false)
+                },
+                onError : () => {
+                    setPending(false)
+                }
+            })
+    
+        }
+
     return (
         <div className='flex flex-col gap-6'>
             <Card className='overflow-hidden p-0'>
@@ -82,7 +99,7 @@ const SignIn = () => {
                                 <p>Create your Account.</p>
                             </div>
 
-                           <Field>
+                            <Field>
                                 <FieldLabel>Name</FieldLabel>
                                 <Input {...form.register('name')} type="text" name="name" placeholder="John Doe" />
                                 <FieldError>
@@ -128,10 +145,12 @@ const SignIn = () => {
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <Button variant="outline" type="button" className="w-full">
+                                <Button disabled={pending} onClick={() => handleSocialAuth("google")} variant="outline" type="button" className="w-full">
+                                    <FcGoogle />
                                     Google
                                 </Button>
-                                <Button variant="outline" type="button" className="w-full">
+                                <Button disabled={pending} onClick={() => handleSocialAuth("github")} variant="outline" type="button" className="w-full">
+                                    <FaGithub />
                                     Github
                                 </Button>
                             </div>
@@ -143,15 +162,15 @@ const SignIn = () => {
                         </div>
                     </form>
 
-                    <div className='hidden md:flex flex-col relative justify-center items-center bg-radial from-green-500 to-green-900'>
-                        <img src="/logo.svg" alt="Logo" className='h-[92px] w-[92px]' />
+                    <div className='hidden md:flex flex-col relative justify-center items-center bg-radial from-sidebar-accent to-sidebar'>
+                        <img src="/logo.svg" alt="Logo" className='h-23 w-23' />
                         <p className='font-bold text-3xl text-white'>Meet AI</p>
                     </div>
                 </CardContent>
             </Card>
 
             <div className="text-muted-foreground text-balance text-xs text-center *:[a]:hover:text-primary *:[a]:underline *:[a]:underline-offset-4 ">
-                        By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
             </div>
 
 
