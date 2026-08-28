@@ -39,12 +39,8 @@ const Page = () => {
   }
   
   return (
-    <>
       <h1 className='text-2xl font-medium'>Welcome To Home page</h1>
       
-        <Button  disabled={pending} type='button' onClick={handleLogOut}>Logout</Button>
-      
-    </>
   )
 
 
