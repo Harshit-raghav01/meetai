@@ -1,49 +1,22 @@
-'use client'
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button'
-import { authClient } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
-
-const Page = () => {
-  const { data: session, isPending } = authClient.useSession();
-  const router = useRouter()
-  const [pending, setPending] = useState<boolean>(false)
-
-  const handleLogOut = () => {
-    setPending(true)
-    authClient.signOut({
-      fetchOptions : {
-        onSuccess : () => {
-          setPending(false)
-          router.push("/sign-in")
-        }
-      }
-    });
-    
-  }
-
-  useEffect(()=>{
-    if(!session && !isPending){
-      router.push("/sign-in")
-    }
-  })
+import { auth } from "@/lib/auth"
+import HomeView from "@/modules/home/ui/views/HomeView"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
  
-  if(isPending){
-    return (
-      <div>Loading...</div>
-    )
-  }
 
-  if(!session){
-    return null;
-  }
-  
-  return (
-      <h1 className='text-2xl font-medium'>Welcome To Home page</h1>
-      
-  )
+const page = async () => {
+    
+    
+ 
+    const session = await auth.api.getSession({
+        headers : await headers()
+    })
 
-
+    if(!session) redirect("/sign-in")
+    
+    return <>    <HomeView />
+    
+    </>
 }
 
-export default Page;
+export default page
