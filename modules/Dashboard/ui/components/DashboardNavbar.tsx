@@ -33,7 +33,7 @@ const DashboardNavbar = () => {
         </Button>
 
         <Button 
-            className="h-9 w-[240px] justify-start text-muted-foreground hover:text-muted-foreground font-normal"
+            className="h-9 w-60 justify-start text-muted-foreground hover:text-muted-foreground font-normal"
             variant="outline"
             size="sm"
             onClick={()=> setCommandOpen((open) => !open)}
